@@ -425,6 +425,8 @@ let S=(()=>{
   return {settings:{...DEF.settings,...(raw.settings||{})},log:raw.log||{},moveIdx:raw.moveIdx||0};
  }catch(e){return JSON.parse(JSON.stringify(DEF))}
 })();
+const canStore=(()=>{try{localStorage.setItem('__t','1');localStorage.removeItem('__t');return true}
+                     catch(e){return false}})();
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
 function day(k){ if(!S.log[k]) S.log[k]={tier:null,at:null,sec:0,tom:0,mov:0,focus:0}; return S.log[k]; }
 
@@ -868,7 +870,9 @@ window.addEventListener('beforeunload',e=>{if(sess.on||pomo.on){e.preventDefault
 /* ══════════ 启动 ══════════ */
 applyTheme();bindSet();fillSet();renderAM();renderWork();renderLog();paintPomo();
 setInterval(()=>{if(!sess.on&&$('#p-am').classList.contains('on'))renderAM()},30000);
-if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
+if('serviceWorker'in navigator&&location.protocol.startsWith('http'))
+ navigator.serviceWorker.register('sw.js').catch(()=>{});
+if(!canStore)setTimeout(()=>toast('这个浏览器存不了记录，练了不会被记下'),900);
 </script>
 </body>
 </html>
