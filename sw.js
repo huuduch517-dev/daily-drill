@@ -1,5 +1,5 @@
 /* 日课 · 离线缓存。改版时把 V 加一，旧缓存会自动清掉。 */
-const V = 'rike-v1';
+const V = 'rike-v2';
 const ASSETS = [
   './', './index.html', './manifest.json',
   './icon-32.png', './icon-180.png', './icon-192.png',
