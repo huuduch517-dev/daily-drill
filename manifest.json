@@ -1,0 +1,17 @@
+{
+  "name": "日课 · 八部金刚功 + 站桩",
+  "short_name": "日课",
+  "description": "晨课三档引导、番茄间隙养生动作、连续天数记录。离线可用，数据只存本机。",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0e0f13",
+  "theme_color": "#0e0f13",
+  "lang": "zh-CN",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512-maskable.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
