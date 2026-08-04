@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>日课 · 站桩 + 八部金刚功（本地版）</title>
+<title>日课 · 站桩 · 金刚功 · 呼吸</title>
 <meta name="theme-color" content="#040c0f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -384,7 +384,8 @@ html[data-t="light"] .toast{background:linear-gradient(135deg,rgba(255,255,255,.
       <div class="mini" style="text-align:left;color:var(--fg2);line-height:1.85">
         一、不问做不做，只问做哪档 —— 档位按时间自动定，你只按开始。<br>
         二、永不为零 —— 再晚也有 3 分钟的保底版，连续天数只认有没有，不认多少。<br>
-        三、站桩排第一 —— 桩是根本。时间不够先砍金刚功，桩尽量保住。
+        三、桩起呼吸收 —— 站桩打底、金刚功正功、腹式呼吸收尾归静。<br>
+        四、时间不够先砍金刚功 —— 桩和呼吸每天都做，只缩短、不拿掉。
       </div>
     </div>
   </div>
@@ -521,10 +522,13 @@ html[data-t="light"] .toast{background:linear-gradient(135deg,rgba(255,255,255,.
     <div class="fld"><label>站桩目标（分钟）<i>完整版和精简版都用这个</i></label><input type="number" id="zzFull" min="1" max="60"></div>
     <div class="fld"><label>保底版站桩（分钟）<i>再晚也做得起来的那一档</i></label><input type="number" id="zzMin" min="1" max="30"></div>
     <div class="fld"><label>金刚功目标（分钟）<i>七遍典藏版约 17 分 40 秒</i></label><input type="number" id="jgMin" min="1" max="60"></div>
+    <div class="fld"><label>腹式呼吸（分钟）<i>完整版和精简版都用这个，视频全长 11 分 01 秒</i></label><input type="number" id="hxFull" min="1" max="60"></div>
+    <div class="fld"><label>保底版呼吸（分钟）<i>跟着视频做前几分钟就停</i></label><input type="number" id="hxMin" min="1" max="30"></div>
 
     <div class="sec">跟练视频（换视频改这里）</div>
     <div class="fld"><label>站桩 BV 号</label><input type="text" id="bvZz" placeholder="BV..."></div>
     <div class="fld"><label>金刚功 BV 号</label><input type="text" id="bvJg" placeholder="BV..."></div>
+    <div class="fld"><label>腹式呼吸 BV 号</label><input type="text" id="bvHx" placeholder="BV..."></div>
     <div class="fld"><label>页内嵌播放器<i>关掉则只显示「在 B 站打开」按钮</i></label><div class="sw" id="swEmbed"><i></i></div></div>
 
     <div class="sec">番茄与养生动作</div>
@@ -565,13 +569,18 @@ const bvUrl=b=>'https://www.bilibili.com/video/'+b;
 const playerUrl=b=>'https://player.bilibili.com/player.html?bvid='+b+
   '&autoplay=1&danmaku=0&high_quality=1&as_wide=1&muted=0';
 
-/* ══════════ 晨课两步（视频驱动） ══════════ */
+/* ══════════ 晨课三步（视频驱动） ══════════ */
+/* 步序号按当前档位实际有几步动态算，别写死 —— 精简版没有金刚功，
+   呼吸就是第二步而不是第三步。 */
 const STEP_META={
- zz:{phase:'第一步 · 根本',name:'站桩',
+ zz:{tag:'根本',name:'站桩',
      vtitle:'站桩：气血足 精力旺，是提升精气神的法宝！9分钟跟练版',up:'气派太极-健身',vlen:'8:38'},
- jg:{phase:'第二步',name:'八部金刚功',
-     vtitle:'八部金刚功初学者七遍典藏版，分左右、带遍数提醒，张道长原声解说',up:'观法如是',vlen:'17:40'}
+ jg:{tag:'正功',name:'八部金刚功',
+     vtitle:'八部金刚功初学者七遍典藏版，分左右、带遍数提醒，张道长原声解说',up:'观法如是',vlen:'17:40'},
+ hx:{tag:'归静',name:'腹式呼吸',
+     vtitle:'深度放松练习：腹式呼吸，快速缓解紧张焦虑',up:'安大雄',vlen:'11:01'}
 };
+const STEP_ORDER=['zz','jg','hx'];
 
 /* ══════════ 养生动作库 · 引火下行（5 个，都能在工位做） ══════════ */
 const MOVES=[
@@ -597,8 +606,8 @@ const KEY='rike_v2', OLD='rike_v1';
 const DEF={
  settings:{
   thFull:'06:40', thLite:'07:20',
-  zzFull:10, zzMin:3, jgMin:18,
-  bvZz:'BV1YT421y76x', bvJg:'BV1aM411z7bS', embed:true,
+  zzFull:10, zzMin:3, jgMin:18, hxFull:11, hxMin:2,
+  bvZz:'BV1YT421y76x', bvJg:'BV1aM411z7bS', bvHx:'BV1Sz4y1S7pb', embed:true,
   pW:45, pB:10, pLB:20, pEvery:2, pLongEvery:4, pAuto:true,
   voice:false, rate:1, beep:true, notif:false, wake:true, theme:'dark'
  },
@@ -681,11 +690,12 @@ function toast(msg){
 
 /* ══════════ 档位 ══════════ */
 const TIERS={full:{key:'full',name:'完整版',lv:3},lite:{key:'lite',name:'精简版',lv:2},min:{key:'min',name:'保底版',lv:1}};
+/* 呼吸是每天必做，三档都有；时间紧就砍金刚功、缩短桩和呼吸，但不整步拿掉 */
 function tierPlan(k){
  const s=S.settings;
- if(k==='full')return [{k:'zz',target:(+s.zzFull)*60},{k:'jg',target:(+s.jgMin)*60}];
- if(k==='lite')return [{k:'zz',target:(+s.zzFull)*60}];
- return [{k:'zz',target:(+s.zzMin)*60}];
+ if(k==='full')return [{k:'zz',target:(+s.zzFull)*60},{k:'jg',target:(+s.jgMin)*60},{k:'hx',target:(+s.hxFull)*60}];
+ if(k==='lite')return [{k:'zz',target:(+s.zzFull)*60},{k:'hx',target:(+s.hxFull)*60}];
+ return [{k:'zz',target:(+s.zzMin)*60},{k:'hx',target:(+s.hxMin)*60}];
 }
 const tierSecs=k=>tierPlan(k).reduce((a,b)=>a+b.target,0);
 function recommend(now=new Date()){
@@ -696,7 +706,7 @@ function recommend(now=new Date()){
  return 'min';
 }
 let picked=null;
-const bvOf=k=>k==='zz'?S.settings.bvZz:S.settings.bvJg;
+const bvOf=k=>({zz:S.settings.bvZz,jg:S.settings.bvJg,hx:S.settings.bvHx})[k];
 
 function renderAM(){
  const now=new Date(), rec=recommend(now), k=picked||rec, t=TIERS[k], plan=tierPlan(k);
@@ -710,15 +720,15 @@ function renderAM(){
  $('#recWhy').textContent=done
    ? '线没断。想再来一次也行，记录只留最高的那档。'
    : (picked&&picked!==rec ? '你手动选的档。想回到自动推荐，再点一下那个亮着的即可。'
-     : k==='full'?'时间充裕，先站桩再走金刚功七遍。'
-     : k==='lite'?'起得偏晚，今天只站桩。桩是根本，先保住这个。'
-     : '来不及了，站三分钟桩。线不断比练多少都重要。');
+     : k==='full'?'时间充裕，全套走完：站桩、金刚功七遍、腹式呼吸收尾。'
+     : k==='lite'?'起得偏晚，今天砍掉金刚功。桩和呼吸是根本，先保住这两头。'
+     : '来不及了，站三分钟桩，再两分钟呼吸。线不断比练多少都重要。');
  $('#btnGo').textContent=done?'再练一次':'开 始';
  $('#btnGo').className='go'+(done?' done':'');
  $('#tierPick').innerHTML=['full','lite','min'].map(x=>
    `<button class="tier${x===k?' on':''}" data-tier="${x}">
      <b>${TIERS[x].name}</b><s>${Math.round(tierSecs(x)/60)} 分钟${x===rec?' · 推荐':''}</s></button>`).join('');
- $('#vidList').innerHTML=['zz','jg'].map((key,i)=>{
+ $('#vidList').innerHTML=STEP_ORDER.map((key,i)=>{
   const m=STEP_META[key],b=bvOf(key);
   return `<div class="vrow"><div class="vnum">${i+1}</div><div class="vinfo">
     <b>${m.name}</b><s>${m.vtitle}<br>${m.up}　·　${m.vlen}</s></div>
@@ -738,7 +748,7 @@ function startSession(k){
 function enterStep(){
  const p=sess.plan[sess.i], m=STEP_META[p.k], b=bvOf(p.k);
  sess.phaseT0=Date.now();sess.hit=false;
- $('#stPhase').textContent=m.phase;
+ $('#stPhase').textContent=`第${'一二三四'[sess.i]}步 · ${m.tag}`;
  $('#stName').textContent=m.name;
  $('#stStep').textContent=`${sess.i+1} / ${sess.plan.length}`;
  $('#stNext').textContent=sess.i>=sess.plan.length-1?'完成':'这步做完';
@@ -852,7 +862,7 @@ function paintPomo(){
  r.style.strokeDashoffset=RC*(1-(pomo.on?(total-left)/total:0));
  $('#ringWrap').classList.toggle('run',pomo.on&&!pomo.paused);   // 涟漪只在真的在跑时扩散
  $('#pMain').textContent=!pomo.on?'开始专注':(pomo.paused?'继续':'暂停');
- document.title=pomo.on?`${mmss(left)} · ${pomo.mode==='work'?'专注':'休息'} — 日课`:'日课 · 站桩 + 八部金刚功';
+ document.title=pomo.on?`${mmss(left)} · ${pomo.mode==='work'?'专注':'休息'} — 日课`:'日课 · 站桩 · 金刚功 · 呼吸';
  const untilMove=(+s.pEvery)-(pomo.count%(+s.pEvery));
  $('#pNext').textContent=(pomo.on||pomo.count)
    ? `已完成 ${pomo.count} 个　·　再 ${untilMove} 个弹养生动作`
@@ -932,8 +942,9 @@ function renderLog(){
 
 /* ══════════ 设置 ══════════ */
 const NUMF=[['thFull','thFull'],['thLite','thLite'],['zzFull','zzFull'],['zzMin','zzMin'],['jgMin','jgMin'],
+ ['hxFull','hxFull'],['hxMin','hxMin'],
  ['pW','pW'],['pB','pB'],['pLB','pLB'],['pEvery','pEvery'],['pLongEvery','pLongEvery']];
-const TXTF=[['bvZz','bvZz'],['bvJg','bvJg']];
+const TXTF=[['bvZz','bvZz'],['bvJg','bvJg'],['bvHx','bvHx']];
 const SWF=[['swEmbed','embed'],['swAuto','pAuto'],['swBeep','beep'],['swVoice','voice'],['swNotif','notif'],['swWake','wake']];
 function fillSet(){
  NUMF.concat(TXTF).forEach(([id,k])=>{const el=$('#'+id);if(el)el.value=S.settings[k]});

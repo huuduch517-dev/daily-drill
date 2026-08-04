@@ -1,13 +1,13 @@
 {
-  "name": "日课 · 八部金刚功 + 站桩",
+  "name": "日课 · 站桩 · 金刚功 · 呼吸",
   "short_name": "日课",
-  "description": "晨课三档引导、番茄间隙养生动作、连续天数记录。离线可用，数据只存本机。",
+  "description": "晨课三步跟练（站桩·金刚功·腹式呼吸）分三档、番茄间隙养生动作、连续天数记录。离线可用，数据只存本机。",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0e0f13",
-  "theme_color": "#0e0f13",
+  "background_color": "#040c0f",
+  "theme_color": "#040c0f",
   "lang": "zh-CN",
   "icons": [
     { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
