@@ -465,12 +465,14 @@ html[data-t="light"] .borb{
       </div>
     </div>
     <div class="card">
-      <div class="lbl">动作库 · 引火下行</div>
+      <div class="lbl">动作库 · 抗阻跟练</div>
       <div id="moveList"></div>
       <div class="mini" style="text-align:left;padding-top:14px;border-top:1px solid var(--line);margin-top:14px">
-        久坐把腹股沟压死、下肢血回不去，是上热下寒的主因。这一层不是锻炼，是每隔一阵把气血往下赶一次。<br>
-        五个动作轮着来，都能在工位上做。
+        同一个视频切成五段，一次休息做一段，轮完是一整套。<br>
+        开头的热身和臀桥已剔除，链接会直接跳到该段起点。
       </div>
+      <a class="btn" style="margin-top:14px;font-size:13px;padding:12px"
+         id="workWhole" href="#" target="_blank" rel="noopener">看完整视频 ↗</a>
     </div>
   </div>
 
@@ -614,6 +616,8 @@ const pad=n=>String(n).padStart(2,'0');
 const mmss=s=>{s=Math.max(0,Math.round(s));return pad(Math.floor(s/60))+':'+pad(s%60)};
 const todayKey=(d=new Date())=>d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
 const bvUrl=b=>'https://www.bilibili.com/video/'+b;
+/* t= 让 B 站直接跳到该段起点。尾斜杠是 B 站的规范形式，省掉一次 301 */
+const moveUrl=m=>bvUrl(WORK_BV)+'/?t='+m.from;
 const playerUrl=b=>'https://player.bilibili.com/player.html?bvid='+b+
   '&autoplay=1&danmaku=0&high_quality=1&as_wide=1&muted=0';
 
@@ -630,24 +634,31 @@ const STEP_META={
 };
 const STEP_ORDER=['zz','jg','hx'];
 
-/* ══════════ 养生动作库 · 引火下行（5 个，都能在工位做） ══════════ */
+/* ══════════ 工作间歇 · 抗阻跟练分段 ══════════
+   同一个视频按 UP 主打的章节切成 5 段，一次休息做一段，轮着来。
+   开头的「开篇与热身」(0:00-1:38) 和「动作一：臀桥」(1:38-5:18) 已剔除，
+   所以从 5:18 起。链接和播放器都带 t= 秒数直接跳到该段起点。
+   注意：分段秒数是绑死这个视频时间轴的，换 BV 号就得重新对章节。 */
+const WORK_BV='BV1wtoUBmE6N';
+const WORK_UP='给我看看你的饭';
 const MOVES=[
- {name:'引火下行跟练',bvid:'BV1hMqNYYEYx',len:'3:09',up:'站桩施元之',
-  desc:'跟着做一遍，站着就能完成，不出汗不换衣服。',
-  why:'上热下寒最直接的一组。心火降下去，头面的燥热就退了。'},
- {name:'踮脚落跟',bvid:'BV1U9eizQE9M',len:'6:16',up:'可夏活力养生',
-  desc:'提踵到最高，稍停，脚跟自然落地震一下。道家踮脚功跟练版。',
-  why:'震动足跟通督脉，是引火下行里最不费事的一招，站工位边上就能做。'},
- {name:'靠墙静蹲',bvid:'BV1PxAoePEhE',len:'1:22',up:'九门功课',
-  desc:'背贴墙下滑，大腿小腿约成 90°，膝不过脚尖，撑住一到两分钟。',
-  why:'把血赶到下肢，直接对冲久坐。视频重点讲姿势，别练伤膝盖。'},
- {name:'金鸡独立',bvid:'BV1Y94y1j7Ro',len:'2:34',up:'武医张鹏',
-  desc:'闭眼单脚站立，双手自然垂放，左右各一次。',
-  why:'注意力落到腿脚，心火下降肾水上升，引火归元的老方子。'},
- {name:'搓腰命门',bvid:'BV1xZ4y1T7UQ',len:'3:45',up:'不一样的三哥',
-  desc:'双掌搓热，贴住后腰上下搓动，搓到腰眼发热。坐着就能做。',
-  why:'命门在下焦。这里暖起来，下寒才化得开。开会时也不显眼。'}
+ {name:'靠墙静蹲',from:318,to:512,
+  desc:'背贴墙下滑，大腿小腿约成 90°，膝盖不过脚尖，撑住。',
+  why:'把血赶到下肢，最直接对冲久坐。腿抖是正常的。'},
+ {name:'提踵',from:512,to:713,
+  desc:'提起脚跟到最高，稍停，再缓缓落下。站工位边上就能做。',
+  why:'震动足跟通督脉，引火下行里最不费事的一招。'},
+ {name:'哑铃推肩',from:713,to:953,
+  desc:'没哑铃就拿两瓶矿泉水，一样练得到。',
+  why:'低头看屏幕把肩颈锁死了，推肩是把它撑开。'},
+ {name:'推墙俯卧撑',from:953,to:1115,
+  desc:'手撑墙即可，不用趴地上，办公室穿衬衫也能做。',
+  why:'开胸。含胸久了气就堵在上焦，推开才顺得下来。'},
+ {name:'拉伸与结束',from:1115,to:1345,
+  desc:'收尾拉伸，跟着做完这段就算一轮走完。',
+  why:'练完不拉伸，第二天会僵。这段别跳。'}
 ];
+MOVES.forEach(m=>{m.len=mmss(m.to-m.from);m.range=mmss(m.from)+' – '+mmss(m.to)});
 
 /* ══════════ 存储 ══════════ */
 const KEY='rike_v2', OLD='rike_v1';
@@ -1102,10 +1113,10 @@ function showMove(){
  const it=MOVES[S.moveIdx%MOVES.length];
  S.moveIdx=(S.moveIdx+1)%MOVES.length;save();
  $('#popName').textContent=it.name;
- $('#popLen').textContent=`${it.up}　·　${it.len}`;
+ $('#popLen').textContent=`${it.len}　·　视频 ${it.range}`;
  $('#popDesc').textContent=it.desc;
  $('#popWhy').textContent=it.why;
- $('#popPlay').href=bvUrl(it.bvid);
+ $('#popPlay').href=moveUrl(it);       // 带 t= 直接跳到该段起点
  $('#pop').classList.add('on');
  speak(it.name);
 }
@@ -1118,8 +1129,9 @@ function renderWork(){
  $('#wTom').textContent=d.tom;$('#wMov').textContent=d.mov;$('#wMin').textContent=d.focus;
  $('#moveList').innerHTML=MOVES.map((m,i)=>
   `<div class="vrow"><div class="vnum">${i+1}</div><div class="vinfo">
-    <b>${m.name}</b><s>${m.why}<br>${m.up}　·　${m.len}</s></div>
-    <a class="vgo" href="${bvUrl(m.bvid)}" target="_blank" rel="noopener">跟练 ↗</a></div>`).join('');
+    <b>${m.name}</b><s>${m.why}<br>${m.len}　·　视频 ${m.range}</s></div>
+    <a class="vgo" href="${moveUrl(m)}" target="_blank" rel="noopener">跟练 ↗</a></div>`).join('');
+ $('#workWhole').href=bvUrl(WORK_BV)+'/?t='+MOVES[0].from;  // 完整版也从热身臀桥之后起
 }
 
 /* ══════════ 记录 ══════════ */
