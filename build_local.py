@@ -33,7 +33,7 @@ assert '<link rel="manifest"' not in h, 'manifest 未清除'
 assert 'serviceWorker.register' not in h, 'sw 注册未清除'
 assert h.rstrip().endswith('</html>'), '文件结尾不完整'
 # 换视频时记得同步这份清单，否则这里会拦下来（这是有意的）
-for bv, why in (('BV1YT421y76x', '站桩'), ('BV1aM411z7bS', '金刚功'), ('BV1wtoUBmE6N', '工作间歇抗阻')):
+for bv, why in (('BV1t54y1T7nF', '站桩'), ('BV1aM411z7bS', '金刚功'), ('BV1wtoUBmE6N', '工作间歇抗阻')):
     assert bv in h, '缺少%s视频 %s' % (why, bv)
 assert 'brInit' in h and 'musicStart' in h, '4-7-8 呼吸模块缺失'
 print('已生成: %s  (%.1f KB)' % (out, len(h.encode('utf-8')) / 1024))

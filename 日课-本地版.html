@@ -626,7 +626,7 @@ const playerUrl=b=>'https://player.bilibili.com/player.html?bvid='+b+
    呼吸就是第二步而不是第三步。 */
 const STEP_META={
  zz:{tag:'根本',name:'站桩',
-     vtitle:'站桩：气血足 精力旺，是提升精气神的法宝！9分钟跟练版',up:'气派太极-健身',vlen:'8:38'},
+     vtitle:'站桩：提升精气神的法宝｜培补元气、经脉畅通（15分钟导引跟练版）',up:'气派太极-健身',vlen:'14:28'},
  jg:{tag:'正功',name:'八部金刚功',
      vtitle:'八部金刚功初学者七遍典藏版，分左右、带遍数提醒，张道长原声解说',up:'观法如是',vlen:'17:40'},
  hx:{tag:'归静',name:'4-7-8 呼吸',builtin:true,
@@ -668,7 +668,7 @@ const DEF={
   zzFull:10, zzMin:3, jgMin:18, hxFull:10,
   bIn:4, bHold:7, bOut:8,                       // 4-7-8
   bMusic:true, bMusVol:45, bCue:true, bCueVol:55, bVoice:false,
-  bvZz:'BV1YT421y76x', bvJg:'BV1aM411z7bS', embed:true,
+  bvZz:'BV1t54y1T7nF', bvJg:'BV1aM411z7bS', embed:true,
   pW:45, pB:10, pLB:20, pEvery:2, pLongEvery:4, pAuto:true,
   voice:false, rate:1, beep:true, notif:false, wake:true, theme:'dark'
  },
@@ -679,7 +679,12 @@ let S=(()=>{
   let raw=JSON.parse(localStorage.getItem(KEY)||'null');
   if(!raw){ const o=JSON.parse(localStorage.getItem(OLD)||'null');   // 从 v1 只迁记录
             raw=o?{log:o.log||{},moveIdx:0}:{}; }
-  return {settings:{...DEF.settings,...(raw.settings||{})},log:raw.log||{},moveIdx:raw.moveIdx||0};
+  const st={...DEF.settings,...(raw.settings||{})};
+  /* 换过的视频：把仍停在旧默认值的设置顶上来。不做这步，老浏览器里存的
+     旧 BV 会一直盖过新默认值，用户永远看不到换的视频。手动改过的不动。 */
+  const SUPERSEDED={bvZz:{'BV1YT421y76x':'BV1t54y1T7nF'}};
+  Object.entries(SUPERSEDED).forEach(([k,m])=>{ if(m[st[k]])st[k]=m[st[k]] });
+  return {settings:st,log:raw.log||{},moveIdx:raw.moveIdx||0};
  }catch(e){return JSON.parse(JSON.stringify(DEF))}
 })();
 const canStore=(()=>{try{localStorage.setItem('__t','1');localStorage.removeItem('__t');return true}
