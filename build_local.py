@@ -37,4 +37,4 @@ for bv, why in (('BV1685G63EB2', '站桩'), ('BV1aM411z7bS', '金刚功'), ('BV1
     assert bv in h, '缺少%s视频 %s' % (why, bv)
 assert 'STEP_ORDER' in h and 'stepSec' in h, '晨课步骤或时长跟随逻辑缺失'
 print('已生成: %s  (%.1f KB)' % (out, len(h.encode('utf-8')) / 1024))
-print('校验通过：无 manifest / 无 sw 注册 / 视频齐全 / 呼吸模块在 / 结尾完整')
+print('校验通过：无 manifest / 无 sw 注册 / 视频齐全 / 晨课逻辑在 / 结尾完整')
