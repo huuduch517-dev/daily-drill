@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>日课 · 站桩 · 八部金刚功</title>
+<title>日课 · 八部金刚功 · 站桩</title>
 <meta name="theme-color" content="#040c0f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -382,7 +382,7 @@ html[data-t="light"] .toast{background:linear-gradient(135deg,rgba(255,255,255,.
       <div class="mini" style="text-align:left;color:var(--fg2);line-height:1.85">
         一、不问做不做，只问做哪档 —— 档位按时间自动定，你只按开始。<br>
         二、只认有没有 —— 走进阶版也算一天，连续天数不看你练了多少。<br>
-        三、桩起功收 —— 站桩打底，金刚功正功。时间不够就砍掉站桩，只走金刚功。
+        三、先动后静 —— 金刚功在前，站桩在后收。时间不够就砍掉站桩，只走金刚功。
       </div>
     </div>
   </div>
@@ -575,12 +575,13 @@ const playerUrl=b=>'https://player.bilibili.com/player.html?bvid='+b+
 /* sec = 视频真实秒数，练习目标默认就跟着它走。换视频时改这里一处即可，
    vlen 显示和档位时长都从它算出来，不会两边写岔。 */
 const STEP_META={
- zz:{tag:'根本',name:'站桩',sec:1831,
-     vtitle:'30分钟站桩（进阶版），起式收式提示，太极音乐伴你专注身体的呼吸',up:'ms动起来'},
  jg:{tag:'正功',name:'八部金刚功',sec:1060,
-     vtitle:'八部金刚功初学者七遍典藏版，分左右、带遍数提醒，张道长原声解说',up:'观法如是'}
+     vtitle:'八部金刚功初学者七遍典藏版，分左右、带遍数提醒，张道长原声解说',up:'观法如是'},
+ zz:{tag:'根本',name:'站桩',sec:1831,
+     vtitle:'30分钟站桩（进阶版），起式收式提示，太极音乐伴你专注身体的呼吸',up:'ms动起来'}
 };
-const STEP_ORDER=['zz','jg'];
+/* 顺序：先金刚功（动）后站桩（静）。首页视频列表和完整版步序都按这个来。 */
+const STEP_ORDER=['jg','zz'];
 
 /* ══════════ 工作间歇 · 抗阻跟练分段 ══════════
    同一个视频按 UP 主打的章节切成 5 段，一次休息做一段，轮着来。
@@ -709,14 +710,13 @@ const TIERS={
  min :{key:'min', name:'保底版',lv:1,legacy:true}
 };
 const TIER_KEYS=['full','lite'];
-/* 完整=站桩+金刚功 / 进阶=只金刚功
-   开着「跟随视频时长」时，站桩和金刚功的目标 = 视频真实长度，
-   跟到视频放完刚好到点。保底档是有意的缩短版，永远不跟随。 */
+/* 完整=金刚功+站桩 / 进阶=只金刚功
+   开着「跟随视频时长」时，两步的目标 = 视频真实长度，跟到视频放完刚好到点。 */
 const stepSec=(k,fbMin)=>
  (S.settings.followVid && STEP_META[k].sec) ? STEP_META[k].sec : (+fbMin)*60;
 function tierPlan(k){
  const s=S.settings;
- if(k==='full')return [{k:'zz',target:stepSec('zz',s.zzFull)},{k:'jg',target:stepSec('jg',s.jgMin)}];
+ if(k==='full')return [{k:'jg',target:stepSec('jg',s.jgMin)},{k:'zz',target:stepSec('zz',s.zzFull)}];
  return [{k:'jg',target:stepSec('jg',s.jgMin)}];       // 进阶版：只金刚功
 }
 const tierSecs=k=>tierPlan(k).reduce((a,b)=>a+b.target,0);
@@ -740,7 +740,7 @@ function renderAM(){
  $('#recWhy').textContent=done
    ? '线没断。想再来一次也行，记录只留最高的那档。'
    : (picked&&picked!==rec ? '你手动选的档。想回到自动推荐，再点一下那个亮着的即可。'
-     : k==='full'?'时间充裕，站桩打底再走金刚功七遍。'
+     : k==='full'?'时间充裕，先走金刚功七遍，再站桩收尾。'
      : '起得偏晚，直接上金刚功七遍。线不断比练多少都重要。');
  $('#btnGo').textContent=done?'再练一次':'开 始';
  $('#btnGo').className='go'+(done?' done':'');
@@ -882,7 +882,7 @@ function paintPomo(){
  r.style.strokeDashoffset=RC*(1-(pomo.on?(total-left)/total:0));
  $('#ringWrap').classList.toggle('run',pomo.on&&!pomo.paused);   // 涟漪只在真的在跑时扩散
  $('#pMain').textContent=!pomo.on?'开始专注':(pomo.paused?'继续':'暂停');
- document.title=pomo.on?`${mmss(left)} · ${pomo.mode==='work'?'专注':'休息'} — 日课`:'日课 · 站桩 · 八部金刚功';
+ document.title=pomo.on?`${mmss(left)} · ${pomo.mode==='work'?'专注':'休息'} — 日课`:'日课 · 八部金刚功 · 站桩';
  const untilMove=(+s.pEvery)-(pomo.count%(+s.pEvery));
  $('#pNext').textContent=(pomo.on||pomo.count)
    ? `已完成 ${pomo.count} 个　·　再 ${untilMove} 个弹养生动作`
